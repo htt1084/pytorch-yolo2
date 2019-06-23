@@ -8,3 +8,4 @@
 backup/
 yolo.weights
 yolo-voc.weights
+darknet19_448.conv.23
