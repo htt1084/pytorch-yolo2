@@ -7,3 +7,4 @@
 *.so
 backup/
 yolo.weights
+yolo-voc.weights
