@@ -34,24 +34,31 @@ class listDataset(Dataset):
     def __getitem__(self, index):
         assert index <= len(self), 'index range error'
         imgpath = self.lines[index].rstrip()
-
+       
+        #width = 13 * 32
+        #self.shape = (width, width)
+        
         if self.train and index % 64== 0:
             if self.seen < 4000*64:
                width = 13*32
                self.shape = (width, width)
             elif self.seen < 8000*64:
-               width = (random.randint(0,3) + 13)*32
+               #width = (random.randint(0,3) + 13)*32
+               width = (random.randint(0,2) + 12)*32
                self.shape = (width, width)
             elif self.seen < 12000*64:
-               width = (random.randint(0,5) + 12)*32
+               #width = (random.randint(0,5) + 12)*32
+               width = (random.randint(0,3) + 11)*32
                self.shape = (width, width)
             elif self.seen < 16000*64:
-               width = (random.randint(0,7) + 11)*32
+               #width = (random.randint(0,7) + 11)*32
+               width = (random.randint(0,4) + 10)*32
                self.shape = (width, width)
             else: # self.seen < 20000*64:
-               width = (random.randint(0,9) + 10)*32
+               #width = (random.randint(0,9) + 10)*32
+               width = (random.randint(0,5) + 9)*32
                self.shape = (width, width)
-
+        
         if self.train:
             jitter = 0.2
             hue = 0.1

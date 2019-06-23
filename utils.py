@@ -30,18 +30,27 @@ def bbox_iou(box1, box2, x1y1x2y2=True):
         w2 = box2[2] - box2[0]
         h2 = box2[3] - box2[1]
     else:
-        mx = min(box1[0]-box1[2]/2.0, box2[0]-box2[2]/2.0)
-        Mx = max(box1[0]+box1[2]/2.0, box2[0]+box2[2]/2.0)
-        my = min(box1[1]-box1[3]/2.0, box2[1]-box2[3]/2.0)
-        My = max(box1[1]+box1[3]/2.0, box2[1]+box2[3]/2.0)
+        mx = (box1[0]-box1[2]/2.0).double()
+        if mx > (box2[0]-box2[2]/2.0).double():
+            mx = box2[0] - box2[2]/2.0
+        #mx = box1[0]/2.0
+        Mx = torch.max((box1[0]+box1[2]/2.0).double(), (box2[0]+box2[2]/2.0).double())
+        my = min((box1[1]-box1[3]/2.0).double(), (box2[1]-box2[3]/2.0).double())
+        My = max((box1[1]+box1[3]/2.0).double(), (box2[1]+box2[3]/2.0).double())
         w1 = box1[2]
         h1 = box1[3]
         w2 = box2[2]
         h2 = box2[3]
-    uw = Mx - mx
-    uh = My - my
-    cw = w1 + w2 - uw
-    ch = h1 + h2 - uh
+    uw = Mx.float() - mx.float()
+    uw = uw.float()
+    uh = My.float() - my.float()
+    uh = uh.float()
+#    cw = w1 + w2 - uw
+    cw = w1.float() + w2.float()
+    cw = cw.float() - uw.float()
+    cw = cw.float()
+    ch = h1.float() + h2.float() - uh.float()
+    ch = ch.float()
     carea = 0
     if cw <= 0 or ch <= 0:
         return 0.0
@@ -49,7 +58,7 @@ def bbox_iou(box1, box2, x1y1x2y2=True):
     area1 = w1 * h1
     area2 = w2 * h2
     carea = cw * ch
-    uarea = area1 + area2 - carea
+    uarea = area1.float() + area2.float() - carea.float()
     return carea/uarea
 
 def bbox_ious(boxes1, boxes2, x1y1x2y2=True):
@@ -393,7 +402,7 @@ def file_lines(thefilepath):
         buffer = thefile.read(8192*1024)
         if not buffer:
             break
-        count += buffer.count('\n'.encode())
+        count += buffer.count('\n')
     thefile.close( )
     return count
 

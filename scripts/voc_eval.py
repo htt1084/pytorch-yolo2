@@ -202,7 +202,7 @@ def voc_eval(detpath,
 
 
 def _do_python_eval(res_prefix, output_dir = 'output'):
-    _devkit_path = '/data/xiaohang/pytorch-yolo2/VOCdevkit'
+    _devkit_path = 'data/VOCdevkit'
     _year = '2007'
     _classes = ('__background__', # always index 0
         'aeroplane', 'bicycle', 'bird', 'boat',
@@ -225,6 +225,8 @@ def _do_python_eval(res_prefix, output_dir = 'output'):
         'Main',
         'test.txt')
     cachedir = os.path.join(_devkit_path, 'annotations_cache')
+    #if not os.path.isdir(cachedir):
+    #    os.mkdir(cachedir)
     aps = []
     # The PASCAL VOC metric changed in 2010
     use_07_metric = True if int(_year) < 2010 else False

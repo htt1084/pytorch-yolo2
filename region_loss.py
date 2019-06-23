@@ -169,7 +169,8 @@ class RegionLoss(nn.Module):
         tw    = Variable(tw.cuda())
         th    = Variable(th.cuda())
         tconf = Variable(tconf.cuda())
-        tcls  = Variable(tcls.view(-1)[cls_mask].long().cuda())
+        #tcls  = Variable(tcls.view(-1)[cls_mask].long().cuda())
+        tcls = tcls[cls_mask==1].view(-1).long().cuda()
 
         coord_mask = Variable(coord_mask.cuda())
         conf_mask  = Variable(conf_mask.cuda().sqrt())

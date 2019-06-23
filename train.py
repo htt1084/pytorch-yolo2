@@ -50,7 +50,7 @@ steps         = [float(step) for step in net_options['steps'].split(',')]
 scales        = [float(scale) for scale in net_options['scales'].split(',')]
 
 #Train parameters
-max_epochs    = max_batches*batch_size//nsamples+1
+max_epochs    = max_batches*batch_size/nsamples+1
 use_cuda      = True
 seed          = int(time.time())
 eps           = 1e-5
@@ -72,6 +72,7 @@ if use_cuda:
     torch.cuda.manual_seed(seed)
 
 model       = Darknet(cfgfile)
+model.float()
 region_loss = model.loss
 
 model.load_weights(weightfile)
@@ -158,11 +159,12 @@ def train(epoch):
             data = data.cuda()
             #target= target.cuda()
         t3 = time.time()
-        data, target = Variable(data), Variable(target)
+        data, target = Variable(data.float()), Variable(target)
         t4 = time.time()
         optimizer.zero_grad()
         t5 = time.time()
         output = model(data)
+        output = output.float()
         t6 = time.time()
         region_loss.seen = region_loss.seen + data.data.size(0)
         loss = region_loss(output, target)
@@ -245,7 +247,11 @@ def test(epoch):
                     if iou > best_iou:
                         best_j = j
                         best_iou = iou
-                if best_iou > iou_thresh and boxes[best_j][6] == box_gt[6]:
+                #print(type(best_iou))
+                #print(type(iou_thresh))
+                #print(type(boxes[best_j][6]))
+                #print(type(box_gt[6]))
+                if best_iou > iou_thresh and boxes[best_j][6].float() == box_gt[6].float():
                     correct = correct+1
 
     precision = 1.0*correct/(proposals+eps)
