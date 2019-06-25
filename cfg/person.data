@@ -1,0 +1,5 @@
+train  = data/person_train.txt
+valid  = data/person_valid.txt
+names = data/person.names
+backup = backup/person
+gpus  = 0

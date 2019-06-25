@@ -1,0 +1,7 @@
+# train model
+python train.py cfg/person.data cfg/yolo-person.cfg darknet19_448.conv.23
+
+# validate model
+python valid.py cfg/person.data cfg/yolo-person.cfg backup/person/000120.weights
+python scripts/person_eval.py results/comp4_det_test_
+
