@@ -25,16 +25,6 @@ from darknet import Darknet
 from models.tiny_yolo import TinyYoloNet
 
 
-from tensorboardX import SummaryWriter
-
-
-# Save path
-save_path = 'backup'
-print('=> will save checkpoints and training record to {}'.format(save_path))
-train_writer = SummaryWriter(os.path.join(save_path, 'train'))
-#test_writer = SummaryWriter(os.path.join(save_path, 'test')
-n_iter = 0
-
 # Training settings
 datacfg       = sys.argv[1]
 cfgfile       = sys.argv[2]
@@ -135,7 +125,7 @@ def adjust_learning_rate(optimizer, batch):
     return lr
 
 def train(epoch):
-    global processed_batches, n_iter
+    global processed_batches
     t0 = time.time()
     if ngpus > 1:
         cur_model = model.module
@@ -178,10 +168,6 @@ def train(epoch):
         t6 = time.time()
         region_loss.seen = region_loss.seen + data.data.size(0)
         loss = region_loss(output, target)
-
-        train_writer.add_scalar('train_loss', loss.item(), n_iter)
-        n_iter += 1
-       
         t7 = time.time()
         loss.backward()
         t8 = time.time()
@@ -215,7 +201,7 @@ def train(epoch):
         logging('save weights to %s/%06d.weights' % (backupdir, epoch+1))
         cur_model.seen = (epoch + 1) * len(train_loader.dataset)
         cur_model.save_weights('%s/%06d.weights' % (backupdir, epoch+1))
-     
+
 def test(epoch):
     def truths_length(truths):
         for i in range(50):
